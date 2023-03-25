@@ -4,20 +4,23 @@ import tumbler from '../../images/smalltumb.png';
 import tumbleroff from '../../images/tumbler-off.png';
 
 class SearchForm extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      tumblerIsOpen: false,
+      tumblerIsOpen: props.tumblerIsOpen,
     };
+    this.setTumblerIsOpen = props.setTumblerIsOpen;
+    this.setSearch = props.setSearch;
+  }
+
+  setLocalTumblerIsOpen() {
+    this.setState((prevState) => ({
+      tumblerIsOpen: !prevState.tumblerIsOpen,
+    }));
   }
 
   render() {
     const { tumblerIsOpen } = this.state;
-    const onClick = () => {
-      this.setState({
-        tumblerIsOpen: !tumblerIsOpen,
-      });
-    };
     return (
       <section className="searchform">
         <div className="searchform__container">
@@ -25,11 +28,14 @@ class SearchForm extends React.Component {
             <input
               className="searchform__container-bar-input"
               type="search"
+              onChange={this.setSearch}
               id="search"
               name="search"
               placeholder="Movie"
               autoComplete="off"
               required
+              key={this.search}
+              value={this.search}
             />
             <button className="searchform__container-bar-button" type="submit">
               <img className="searchform__container-bar-pic" src={find} alt="magnifying glass" />
@@ -37,7 +43,14 @@ class SearchForm extends React.Component {
           </form>
           <div className="searchform__container-short">
             <p className="searchform__container-short-sign">Short films</p>
-            <button className="searchform__container-button" type="button" onClick={onClick}>
+            <button
+              className="searchform__container-button"
+              type="button"
+              onClick={() => {
+                this.setTumblerIsOpen();
+                this.setLocalTumblerIsOpen();
+              }}
+            >
               { tumblerIsOpen
                 ? (
                   <img className="searchform__container-tumbler" src={tumbler} alt="tumbler on" />
