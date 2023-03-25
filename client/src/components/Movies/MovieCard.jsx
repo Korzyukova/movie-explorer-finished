@@ -17,14 +17,16 @@ class movieCard extends React.Component {
   }
 
   render() {
+    console.log(this.movie);
     return (
-
       <li>
-        <img
-          className="photo-grid__item"
-          src={`${moviesApi.getBase()}/${this.movie.image.url}`}
-          alt={this.movie.image.alternativeText}
-        />
+        <a href={this.movie.trailerLink} target="_blank" rel="noreferrer">
+          <img
+            className="photo-grid__item"
+            src={`${moviesApi.getBase()}/${this.movie.image.url}`}
+            alt={this.movie.image.alternativeText}
+          />
+        </a>
         <div className="photo-grid__bottom">
           <h2 className="photo-grid__name">{this.movie.nameEN}</h2>
           <button className="photo-grid__likeme" type="button">
@@ -33,7 +35,6 @@ class movieCard extends React.Component {
         </div>
         <p className="photo-grid__bottom-time">{calculateTime(this.movie.duration)}</p>
       </li>
-
     );
   }
 }

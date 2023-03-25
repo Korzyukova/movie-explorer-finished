@@ -7,12 +7,13 @@ import Footer from '../components/Footer';
 import More from '../components/Movies/More';
 import Header from '../components/Header';
 import { moviesApi } from '../utils/MoviesApi';
+import searchMovies from '../utils/searchMovies';
 
 class Movies extends React.Component {
   constructor() {
     super();
     this.state = {
-      tumblerIsOpen: true,
+      tumblerIsOpen: false,
       shortMovies: [],
       allMovies: [],
       search: '',
@@ -47,7 +48,7 @@ class Movies extends React.Component {
     const {
       tumblerIsOpen, allMovies, shortMovies, search,
     } = this.state;
-    const movies = tumblerIsOpen ? shortMovies : allMovies;
+    const movies = searchMovies(search, tumblerIsOpen ? shortMovies : allMovies);
     return (
       <main className="movies">
         <Header user />

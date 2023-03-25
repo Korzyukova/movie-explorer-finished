@@ -3,6 +3,10 @@ import find from '../../images/find.png';
 import tumbler from '../../images/smalltumb.png';
 import tumbleroff from '../../images/tumbler-off.png';
 
+function onSubmit(e) {
+  e.preventDefault();
+}
+
 class SearchForm extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +28,7 @@ class SearchForm extends React.Component {
     return (
       <section className="searchform">
         <div className="searchform__container">
-          <form className="searchform__container-bar">
+          <form className="searchform__container-bar" onSubmit={onSubmit}>
             <input
               className="searchform__container-bar-input"
               type="search"
