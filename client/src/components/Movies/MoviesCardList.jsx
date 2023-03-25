@@ -1,36 +1,31 @@
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import wolf from '../../images/wolf.jpg';
 import MovieCard from './MovieCard';
+import { moviesApi } from '../../utils/MoviesApi';
 
 class MoviesCardList extends React.Component {
   constructor(props) {
     super(props);
     this.savedMovies = props.savedMovies;
+    this.state = {
+      movies: [],
+    };
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  createPlaceholders() {
-    const movieArrPlaceholder = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 12; i++) {
-      const mins = Math.floor(Math.random() * 60);
-      movieArrPlaceholder.push({
-        img: wolf,
-        title: 'Wolf on a rock',
-        length: `2h ${mins}min`,
-        liked: mins % 2 === 0,
-      });
-    }
-    return movieArrPlaceholder;
+  async componentDidMount() {
+    const movies = await moviesApi.getMovies();
+    this.setState({
+      movies,
+    });
   }
 
   render() {
+    const { movies } = this.state;
     return (
       <div className="moviescardlist">
         <div className="moviescardlist__container">
           <ul className="photo-grid">
-            {this.createPlaceholders()
+            {movies
               .map((movie) => (
                 <MovieCard
                   movie={movie}

@@ -1,5 +1,12 @@
 import React from 'react';
 import CardButton from './CardButton';
+import { moviesApi } from '../../utils/MoviesApi';
+
+function calculateTime(min) {
+  const hours = Math.floor(min / 60);
+  const mins = min - hours * 60;
+  return `${hours <= 0 ? '' : `${hours}h `}${mins}m`;
+}
 
 class movieCard extends React.Component {
   constructor(props) {
@@ -15,16 +22,16 @@ class movieCard extends React.Component {
       <li>
         <img
           className="photo-grid__item"
-          src={this.movie.img}
-          alt={this.movie.title}
+          src={`${moviesApi.getBase()}/${this.movie.image.url}`}
+          alt={this.movie.image.alternativeText}
         />
         <div className="photo-grid__bottom">
-          <h2 className="photo-grid__name">{this.movie.title}</h2>
+          <h2 className="photo-grid__name">{this.movie.nameEN}</h2>
           <button className="photo-grid__likeme" type="button">
             <CardButton liked={this.liked} savedMovies={this.savedMovies} />
           </button>
         </div>
-        <p className="photo-grid__bottom-time">{this.movie.length}</p>
+        <p className="photo-grid__bottom-time">{calculateTime(this.movie.duration)}</p>
       </li>
 
     );
