@@ -1,6 +1,6 @@
-const checkResponse = require('./checkResponse');
+import checkResponse from './checkResponse';
 
-export default class MainApi {
+class MainApi {
   constructor(options) {
     this.options = options;
   }
@@ -28,7 +28,7 @@ export default class MainApi {
       method: 'POST',
       headers: this.options.headers,
       body: JSON.stringify(movie),
-    }).them((res) => checkResponse(res));
+    }).then((res) => checkResponse(res));
   }
 
   async signUp(user) {
@@ -63,10 +63,12 @@ export default class MainApi {
   }
 }
 
-module.exports = new MainApi({
-  baseUrl: 'http://localhost:3000',
+const api = new MainApi({
+  baseUrl: 'http://localhost:3000/api',
   headers: {
     authorization: `Bearer ${localStorage.getItem('token')}`,
     'Content-Type': 'application/json',
   },
 });
+
+export default api;

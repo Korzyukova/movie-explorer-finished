@@ -18,7 +18,7 @@ class MoviesCardList extends React.Component {
               .map((movie) => (
                 <MovieCard
                   movie={movie}
-                  liked={movie.liked}
+                  liked={movie.liked ?? false}
                   savedMovies={this.savedMovies}
                   key={uuidv4()}
                 />

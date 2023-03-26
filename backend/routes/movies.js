@@ -11,7 +11,7 @@ const {
 
 router.get('/movies', auth, getMovies);
 
-router.post('/movies', auth, celebrate({
+router.post('/movies', /* auth, */ celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),

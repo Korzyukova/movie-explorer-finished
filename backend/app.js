@@ -12,7 +12,16 @@ const { errorHandler, NotFoundError404 } = require('./middlewares/errorHandlers'
 
 const app = express();
 app.use(express.json());
-
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 app.use(requestLogger);
 app.use('/api', routes);
 app.all('*', auth, () => {
