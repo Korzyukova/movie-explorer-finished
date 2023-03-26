@@ -17,7 +17,6 @@ class movieCard extends React.Component {
   }
 
   render() {
-    console.log(this.movie);
     return (
       <li>
         <a href={this.movie.trailerLink} target="_blank" rel="noreferrer">
