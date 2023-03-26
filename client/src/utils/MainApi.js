@@ -32,7 +32,7 @@ class MainApi {
   }
 
   async signUp(user) {
-    return fetch(`${this.options.baseUrl}/sighup`, {
+    return fetch(`${this.options.baseUrl}/signup`, {
       method: 'POST',
       headers: this.options.headers,
       body: JSON.stringify(user),
