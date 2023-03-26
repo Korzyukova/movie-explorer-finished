@@ -1,7 +1,46 @@
 import React from 'react';
 import logo from '../images/logo.png';
+import MainApi from '../utils/MainApi';
+
+async function handleSignIn(email, password) {
+  const token = await MainApi.signUp({
+    email,
+    password,
+  });
+  localStorage.setItem('token', token);
+  window.location = '/movies';
+}
 
 class Signin extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.state = {
+      email: '',
+      password: '',
+    };
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+    const { email, password } = this.state;
+    await handleSignIn(email, password);
+    this.setState({
+      email: '',
+      password: '',
+    });
+  }
+
+  handleEmailChange = (event) => {
+    this.setState({ email: event.target.value });
+  };
+
+  handlePasswordChange = (event) => {
+    this.setState({ password: event.target.value });
+  };
+
   render() {
     return (
       <section className="signup">

@@ -9,6 +9,7 @@ async function handleRegister(email, password, name) {
     name,
   });
   localStorage.setItem('token', token);
+  window.location = '/movies';
 }
 
 class Signup extends React.Component {
