@@ -7,8 +7,10 @@ async function handleSignIn(email, password) {
     email,
     password,
   });
-  localStorage.setItem('token', token.token);
-  window.location = '/movies';
+  if (token.token) {
+    localStorage.setItem('token', token.token);
+    window.location = '/movies';
+  }
 }
 
 class Signin extends React.Component {

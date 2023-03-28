@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import CardButton from './CardButton';
 import { moviesApi } from '../../utils/MoviesApi';
@@ -18,6 +20,7 @@ class movieCard extends React.Component {
     super(props);
     this.movie = props.movie;
     this.savedMovies = props.savedMovies;
+    this.removeLike = props.removeLike;
     this.state = {
       liked: props.liked,
     };
@@ -32,7 +35,7 @@ class movieCard extends React.Component {
       description: this.movie.description,
       image: buildImgLink(this.movie.image.url),
       trailerLink: this.movie.trailerLink,
-      thumbnail: buildImgLink(this.movie.image.formats.thumbnail.url),
+      thumbnail: buildImgLink(this.movie?.image?.formats?.thumbnail?.url ?? ''),
       movieId: this.movie.id,
       nameRU: this.movie.nameRU,
       nameEN: this.movie.nameEN,
@@ -57,13 +60,21 @@ class movieCard extends React.Component {
             className="photo-grid__likeme"
             type="button"
             onClick={async () => {
-              this.setState((prev) => ({
-                liked: !prev.liked,
-              }));
-              const body = this.buildBody();
-              console.log('body', body);
-              const data = await mainApi.postMovies(this.buildBody());
-              console.log(data);
+              if (!liked) {
+                await mainApi.postMovies(this.buildBody());
+                this.setState((prev) => ({
+                  ...prev,
+                  liked: !prev.liked,
+                }));
+                await this.removeLike();
+              } else {
+                await mainApi.deleteMovie(this.movie._id ?? this.movie.saveId);
+                this.setState((prev) => ({
+                  ...prev,
+                  liked: !prev.liked,
+                }));
+                await this.removeLike(this.movie._id);
+              }
             }}
           >
             <CardButton key={liked} liked={liked} savedMovies={this.savedMovies} />

@@ -1,3 +1,6 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-expressions */
 import React from 'react';
@@ -8,15 +11,16 @@ import MoviesCardList from '../components/Movies/MoviesCardList';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { moviesApi } from '../utils/MoviesApi';
+import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
 
-function getWidthSize(width) {
+export function getWidthSize(width) {
   if (width >= 1280) return 'large';
   if (width >= 720) return 'medium';
   return 'small';
 }
 
-function calcNumberOfCards() {
+export function calcNumberOfCards() {
   const width = getWidthSize(window.outerWidth);
   switch (width) {
     case 'large':
@@ -30,7 +34,7 @@ function calcNumberOfCards() {
   }
 }
 
-function calcMore() {
+export function calcMore() {
   const width = getWidthSize(window.outerWidth);
   switch (width) {
     case 'large':
@@ -52,10 +56,21 @@ class Movies extends React.Component {
       cards: calcNumberOfCards(),
       more: calcMore(),
     };
+    this.refetch = this.refetch.bind(this);
   }
 
   async componentDidMount() {
     const movies = await moviesApi.getMovies();
+    const likedMovies = await MainApi.getMovies();
+    let i = 0;
+    for (const movie of movies) {
+      const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
+      if (lm.length > 0) {
+        movies[i].liked = true;
+        movies[i].saveId = lm[0]._id;
+      }
+      i++;
+    }
     const shortMovies = movies.filter((movie) => movie.duration <= 40);
     this.setState((prev) => ({
       ...prev,
@@ -79,6 +94,26 @@ class Movies extends React.Component {
     }));
   };
 
+  async refetch() {
+    const movies = await moviesApi.getMovies();
+    const likedMovies = await MainApi.getMovies();
+    let i = 0;
+    for (const movie of movies) {
+      const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
+      if (lm.length > 0) {
+        movies[i].liked = true;
+        movies[i].saveId = lm[0]._id;
+      }
+      i++;
+    }
+    const shortMovies = movies.filter((movie) => movie.duration <= 40);
+    this.setState((prev) => ({
+      ...prev,
+      shortMovies,
+      allMovies: movies,
+    }));
+  }
+
   render() {
     const {
       tumblerIsOpen, allMovies, shortMovies, search, cards, more,
@@ -95,6 +130,7 @@ class Movies extends React.Component {
       if (movies.length > cards) movies.splice(0, cards);
       else len = movies.length;
     }
+
     return (
       <main className="movies">
         <Header user />
@@ -103,7 +139,11 @@ class Movies extends React.Component {
           setTumblerIsOpen={this.onClick}
           setSearch={this.setSearch}
         />
-        <MoviesCardList key={JSON.stringify({ search, tumblerIsOpen })} movies={movies} />
+        <MoviesCardList
+          key={JSON.stringify({ search, tumblerIsOpen, movies })}
+          movies={movies}
+          refetch={this.refetch}
+        />
         {
           !(cards >= len) && (
             <section className="more">

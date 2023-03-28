@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 
 import '../App.css';
@@ -7,6 +9,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
+import { calcNumberOfCards, calcMore } from './Movies';
 
 class SavedMovies extends React.Component {
   constructor() {
@@ -16,6 +19,8 @@ class SavedMovies extends React.Component {
       shortMovies: [],
       allMovies: [],
       search: '',
+      cards: calcNumberOfCards(),
+      more: calcMore(),
     };
   }
 
@@ -39,15 +44,37 @@ class SavedMovies extends React.Component {
   setSearch = (value) => {
     this.setState((prev) => ({
       ...prev,
-      search: value.target.value,
+      search: value,
+      cards: calcNumberOfCards(),
     }));
   };
 
   render() {
     const {
-      tumblerIsOpen, allMovies, shortMovies, search,
+      tumblerIsOpen, allMovies, shortMovies, search, cards, more,
     } = this.state;
-    const movies = searchMovies(search, tumblerIsOpen ? shortMovies : allMovies);
+    const chooseMovies = tumblerIsOpen ? [...shortMovies] : [...allMovies];
+    const listName = tumblerIsOpen ? 'shortMovies' : 'allMovies';
+    let len = 0;
+    let movies = [];
+    if (search) {
+      len = this.state[listName].length;
+      movies = searchMovies(
+        search,
+        chooseMovies,
+      ).map((movie) => ({
+        ...movie,
+        liked: true,
+      }));
+    } else {
+      movies = chooseMovies.map((movie) => ({
+        ...movie,
+        liked: true,
+      }));
+      len = this.state[listName].length;
+    }
+    if (movies.length > cards) movies.splice(0, cards);
+    else len = movies.length;
     return (
       <main className="movies">
         <Header user />
@@ -57,7 +84,33 @@ class SavedMovies extends React.Component {
           search={search}
           setSearch={this.setSearch}
         />
-        <MoviesCardList key={movies} movies={movies} savedMovies />
+        <MoviesCardList
+          key={JSON.stringify({ search, tumblerIsOpen, movies })}
+          movies={movies}
+          savedMovies
+        />
+        {
+          !(cards >= len) && (
+            <section className="more">
+              <button
+                className="more-button"
+                type="button"
+                onClick={() => {
+                  const update = cards + more;
+                  update <= len ? this.setState((prev) => ({
+                    ...prev,
+                    cards: update,
+                  })) : this.setState((prev) => ({
+                    ...prev,
+                    cards: len,
+                  }));
+                }}
+              >
+                <span className="more-text">More</span>
+              </button>
+            </section>
+          )
+        }
         <Footer />
       </main>
     );

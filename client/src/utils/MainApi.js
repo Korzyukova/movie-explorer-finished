@@ -56,7 +56,7 @@ class MainApi {
   }
 
   async deleteMovie(id) {
-    return fetch(`{this.options.baseUrl}/movies/${id}`, {
+    return fetch(`${this.options.baseUrl}/movies/${id}`, {
       method: 'DELETE',
       headers: this.options.headers,
     }).then((res) => checkResponse(res));
