@@ -19,7 +19,7 @@ class Profile extends React.Component {
             </div>
 
             <div className="profile__bottom">
-              <p className="profile__bottom-text">Update profile</p>
+              <button className="profile__bottom-text" type="submit">Update profile</button>
               <a
                 className="profile__bottom-link"
                 href="/"

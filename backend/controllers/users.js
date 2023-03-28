@@ -54,7 +54,6 @@ module.exports.updateUser = (req, res, next) => {
 
 module.exports.signin = (req, res, next) => {
   const { email, password } = req.body;
-
   User.findOne({ email })
     .select('+password')
     .then(async (user) => {
@@ -68,7 +67,7 @@ module.exports.signin = (req, res, next) => {
           const token = jwt.sign({ _id: user._id }, secret, {
             expiresIn: '7d',
           });
-          res.send({ token });
+          res.json({ token });
         }
       }
     })

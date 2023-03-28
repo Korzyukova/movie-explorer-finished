@@ -3,11 +3,11 @@ import logo from '../images/logo.png';
 import MainApi from '../utils/MainApi';
 
 async function handleSignIn(email, password) {
-  const token = await MainApi.signUp({
+  const token = await MainApi.signIn({
     email,
     password,
   });
-  localStorage.setItem('token', token);
+  localStorage.setItem('token', token.token);
   window.location = '/movies';
 }
 
@@ -57,6 +57,7 @@ class Signin extends React.Component {
               className="signup__container-input"
               placeholder="Email"
               type="email"
+              onChange={this.handleEmailChange}
             />
 
             <h1 className="signup__container-input-name">Password</h1>
@@ -64,9 +65,14 @@ class Signin extends React.Component {
               className="signup__container-input"
               placeholder="Password"
               type="password"
+              onChange={this.handlePasswordChange}
             />
           </form>
-          <button className="signup__container-button-signin" type="submit">
+          <button
+            className="signup__container-button-signin"
+            type="submit"
+            onClick={this.handleSubmit}
+          >
             Sign In
           </button>
           <div className="signup__bottom">

@@ -3,13 +3,12 @@ import logo from '../images/logo.png';
 import MainApi from '../utils/MainApi';
 
 async function handleRegister(email, password, name) {
-  const token = await MainApi.signUp({
+  await MainApi.signUp({
     email,
     password,
     name,
   });
-  localStorage.setItem('token', token);
-  window.location = '/movies';
+  window.location = '/signin';
 }
 
 class Signup extends React.Component {
@@ -54,7 +53,7 @@ class Signup extends React.Component {
           </a>
           <h1 className="signup__container-header">Welcome!</h1>
 
-          <form className="signup__container-form" onSubmit={this.handleSubmit}>
+          <form className="signup__container-form">
             <h1 className="signup__container-input-name">Name</h1>
             <input
               className="signup__container-input"
@@ -80,7 +79,7 @@ class Signup extends React.Component {
             />
             <h1 className="signup__container-wrong">Something goes wrong</h1>
           </form>
-          <button className="signup__container-button" type="submit">
+          <button className="signup__container-button" type="submit" onClick={this.handleSubmit}>
             Sign Up
           </button>
           <div className="signup__bottom">

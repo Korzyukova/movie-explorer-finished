@@ -27,12 +27,14 @@ router.post('/signup', celebrate({
   }),
 }), signup);
 
-router.post('/signin', celebrate({
+router.post(
+  '/signin', /* celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
-}), signin);
+}), */ signin,
+);
 
 router.get('/signout', auth, signout);
 

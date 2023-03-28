@@ -24,7 +24,6 @@ class movieCard extends React.Component {
   }
 
   buildBody() {
-    console.log(this.movie);
     return {
       country: this.movie.country,
       director: this.movie.director,
@@ -34,20 +33,21 @@ class movieCard extends React.Component {
       image: buildImgLink(this.movie.image.url),
       trailerLink: this.movie.trailerLink,
       thumbnail: buildImgLink(this.movie.image.formats.thumbnail.url),
-      movieID: this.movie.id,
+      movieId: this.movie.id,
       nameRU: this.movie.nameRU,
-      nameEn: this.movie.nameEN,
+      nameEN: this.movie.nameEN,
     };
   }
 
   render() {
     const { liked } = this.state;
+    const image = this.movie.image.url ? buildImgLink(this.movie.image.url) : this.movie.image;
     return (
       <li>
         <a href={this.movie.trailerLink} target="_blank" rel="noreferrer">
           <img
             className="photo-grid__item"
-            src={buildImgLink(this.movie.image.url)}
+            src={image}
             alt={this.movie.image.alternativeText}
           />
         </a>

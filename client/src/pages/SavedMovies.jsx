@@ -5,7 +5,7 @@ import SearchForm from '../components/Movies/SearchForm';
 import MoviesCardList from '../components/Movies/MoviesCardList';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import { moviesApi } from '../utils/MoviesApi';
+import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
 
 class SavedMovies extends React.Component {
@@ -20,12 +20,12 @@ class SavedMovies extends React.Component {
   }
 
   async componentDidMount() {
-    const movies = await moviesApi.getMovies();
-    const shortMovies = movies.filter((movie) => movie.duration <= 40);
+    const movies = await MainApi.getMovies();
+    const shortMovies = movies.movies.filter((movie) => movie.duration <= 40);
     this.setState((prev) => ({
       ...prev,
       shortMovies,
-      allMovies: movies,
+      allMovies: movies.movies,
     }));
   }
 

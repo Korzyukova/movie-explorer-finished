@@ -103,7 +103,7 @@ class Movies extends React.Component {
           setTumblerIsOpen={this.onClick}
           setSearch={this.setSearch}
         />
-        <MoviesCardList key={search} movies={movies} />
+        <MoviesCardList key={JSON.stringify({ search, tumblerIsOpen })} movies={movies} />
         {
           !(cards >= len) && (
             <section className="more">

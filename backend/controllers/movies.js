@@ -13,7 +13,7 @@ module.exports.getMovies = (req, res, next) => {
     owner: req.user._id,
   })
     .then((movies) => {
-      res.send({ data: movies });
+      res.send({ movies });
     })
     .catch(next);
 };
@@ -32,6 +32,7 @@ module.exports.createMovie = (req, res, next) => {
     nameEN,
     movieId,
   } = req.body;
+
   Movie.create({
     country,
     director,
