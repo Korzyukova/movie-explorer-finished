@@ -31,6 +31,7 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
+  console.log(req.body);
   const { name, email } = req.body;
   const update = {};
   if (name) update.name = name;

@@ -49,7 +49,7 @@ class MainApi {
 
   async patchMe(user) {
     return fetch(`${this.options.baseUrl}/users/me`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: this.options.headers,
       body: JSON.stringify(user),
     }).then((res) => checkResponse(res));
