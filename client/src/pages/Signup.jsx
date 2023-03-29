@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../images/logo.png';
 import MainApi from '../utils/MainApi';
+import { validatePassword, validateEmail, validateName } from '../utils/validation';
 
 async function handleRegister(email, password, name) {
   await MainApi.signUp({
@@ -9,6 +10,14 @@ async function handleRegister(email, password, name) {
     name,
   });
   window.location = '/signin';
+}
+
+async function validateInput(params) {
+  const { email, name, password } = params;
+  const emailVal = await validateEmail(email);
+  const nameVal = await validateName(name);
+  const passwordVal = await validatePassword(password);
+  return emailVal && nameVal && passwordVal;
 }
 
 class Signup extends React.Component {
@@ -23,28 +32,76 @@ class Signup extends React.Component {
       email: '',
       password: '',
       name: '',
+      validationErr: false,
     };
   }
 
   async handleSubmit(e) {
     e.preventDefault();
     const { email, password, name } = this.state;
+    const validate = await validateInput({ email, password, name });
+    if (!validate) {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: true,
+      }));
+    } else {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: false,
+      }));
+    }
     await handleRegister(email, password, name);
   }
 
-  handleEmailChange = (event) => {
+  handleEmailChange = async (event) => {
     this.setState({ email: event.target.value });
+    const { email, name, password } = this.state;
+    const validate = await validateInput({ email, password, name });
+    if (!validate) {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: true,
+      }));
+    } else {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: false,
+      }));
+    }
   };
 
-  handlePasswordChange = (event) => {
+  handlePasswordChange = async (event) => {
     this.setState({ password: event.target.value });
+    const { email, name, password } = this.state;
+    const validate = await validateInput({ email, password, name });
+    if (!validate) {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: true,
+      }));
+    } else {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: false,
+      }));
+    }
   };
 
-  handleNameChange = (event) => {
+  handleNameChange = async (event) => {
     this.setState({ name: event.target.value });
+    const { email, name, password } = this.state;
+    const validate = await validateInput({ email, password, name });
+    if (!validate) {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: true,
+      }));
+    }
   };
 
   render() {
+    const { validationErr } = this.state;
     return (
       <section className="signup">
         <div className="signup__container">
@@ -77,9 +134,9 @@ class Signup extends React.Component {
               type="password"
               onChange={this.handlePasswordChange}
             />
-            <h1 className="signup__container-wrong">Something goes wrong</h1>
+            <h1 className={`signup__container-wrong ${validationErr ? 'signup__container-wrong-visible' : ''}`}>Something went wrong</h1>
           </form>
-          <button className="signup__container-button" type="submit" onClick={this.handleSubmit}>
+          <button className={`signup__container-button ${validationErr ? 'signup__container-button-disable' : ''}`} type="button" onClick={this.handleSubmit}>
             Sign Up
           </button>
           <div className="signup__bottom">

@@ -13,6 +13,8 @@ import Header from '../components/Header';
 import { moviesApi } from '../utils/MoviesApi';
 import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
+import checkAuth from '../utils/checkAuth';
+import Preloader from '../components/Preloader';
 
 export function getWidthSize(width) {
   if (width >= 1280) return 'large';
@@ -55,28 +57,38 @@ class Movies extends React.Component {
       searchActive: false,
       cards: calcNumberOfCards(),
       more: calcMore(),
+      loading: true,
     };
     this.refetch = this.refetch.bind(this);
   }
 
   async componentDidMount() {
-    const movies = await moviesApi.getMovies();
-    const likedMovies = await MainApi.getMovies();
-    let i = 0;
-    for (const movie of movies) {
-      const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
-      if (lm.length > 0) {
-        movies[i].liked = true;
-        movies[i].saveId = lm[0]._id;
+    checkAuth();
+    try {
+      const movies = await moviesApi.getMovies();
+      const likedMovies = await MainApi.getMovies();
+      let i = 0;
+      for (const movie of movies) {
+        const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
+        if (lm.length > 0) {
+          movies[i].liked = true;
+          movies[i].saveId = lm[0]._id;
+        }
+        i++;
       }
-      i++;
+      const shortMovies = movies.filter((movie) => movie.duration <= 40);
+      this.setState((prev) => ({
+        ...prev,
+        shortMovies,
+        allMovies: movies,
+        loading: false,
+      }));
+    } catch {
+      this.setState(() => ({
+        error: true,
+        loading: false,
+      }));
     }
-    const shortMovies = movies.filter((movie) => movie.duration <= 40);
-    this.setState((prev) => ({
-      ...prev,
-      shortMovies,
-      allMovies: movies,
-    }));
   }
 
   onClick = () => {
@@ -116,10 +128,11 @@ class Movies extends React.Component {
 
   render() {
     const {
-      tumblerIsOpen, allMovies, shortMovies, search, cards, more,
+      tumblerIsOpen, allMovies, shortMovies, search, cards, more, error, loading,
     } = this.state;
     let len = 0;
     let movies = [];
+    let notFound = false;
     if (search) {
       const listName = tumblerIsOpen ? 'shortMovies' : 'allMovies';
       len = this.state[listName].length;
@@ -127,6 +140,7 @@ class Movies extends React.Component {
         search,
         tumblerIsOpen ? [...shortMovies] : [...allMovies],
       );
+      if (movies.length === 0) notFound = true;
       if (movies.length > cards) movies.splice(0, cards);
       else len = movies.length;
     }
@@ -166,6 +180,9 @@ class Movies extends React.Component {
             </section>
           )
         }
+        {notFound && <h1>Movie not found!</h1>}
+        {error && <h1>Error fetching movies!</h1>}
+        {loading && <Preloader />}
         <Footer />
       </main>
     );

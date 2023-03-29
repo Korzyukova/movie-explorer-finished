@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from '../components/Header';
+import checkAuth from '../utils/checkAuth';
 import MainApi from '../utils/MainApi';
+import { validateEmail, validateName } from '../utils/validation';
 
 class Profile extends React.Component {
   constructor() {
@@ -15,11 +17,13 @@ class Profile extends React.Component {
   }
 
   async componentDidMount() {
+    checkAuth();
     const { data: me } = await MainApi.getMe();
     console.log(me);
     this.setState(() => ({
       name: me.name,
       email: me.email,
+      original: `${me.name}${me.email}`,
     }));
   }
 
@@ -40,6 +44,8 @@ class Profile extends React.Component {
   async handleSubmit(e) {
     e.preventDefault();
     const { name, email } = this.state;
+    const validate = validateEmail(email) || validateName(name);
+    if (!validate) return;
     await MainApi.patchMe({
       name,
       email,
@@ -47,7 +53,8 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { name, email } = this.state;
+    const { name, email, original } = this.state;
+    const change = `${name}${email}` === original;
     return (
       <>
         <Header user />
@@ -61,21 +68,20 @@ class Profile extends React.Component {
                 !
               </h1>
               <div className="profile__data profile__data-name">
-                {/* <p>Name</p> */}
-                <input className="signup__container-input" value={name} onChange={this.handleNameChange} />
+                <input className="signup__container-input" placeholder="Name" value={name} onChange={this.handleNameChange} />
               </div>
               <div className="profile__data">
-                {/* <p>E-mail</p> */}
                 <input
                   className="signup__container-input"
                   type="email"
+                  placeholder="Email"
                   onChange={this.handleEmailChange}
                   value={email}
                 />
               </div>
             </form>
             <div className="profile__bottom">
-              <button className="profile__bottom-text" type="button" onClick={this.handleSubmit}>Update profile</button>
+              <button className={`profile__bottom-text ${change && 'profile__bottom-text-disabled'}`} type="button" onClick={change ? () => {} : this.handleSubmit}>Update profile</button>
               <a
                 className="profile__bottom-link"
                 href="/"

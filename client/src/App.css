@@ -100,6 +100,8 @@
 @import url(./blocks/signup/__container/signup__container-wrong.css);
 @import url(./blocks/signup/__container/signup__container-form.css);
 @import url(./blocks/signup/__container/signup__container-button-signin.css);
+@import url(./blocks/signup/__container/signup__container-wrong-visible.css);
+@import url(./blocks/signup/__container/signup__container-button-disable.css);
 
 @import url(./blocks/searchform/searchform.css);
 @import url(./blocks/searchform/__container/searchform__container.css);
@@ -133,6 +135,7 @@
 @import url(./blocks/profile/profile__bottom/profile__bottom-text.css);
 @import url(./blocks/profile/profile__bottom/profile__bottom-link.css);
 @import url(./blocks/profile/profile__container.css);
+@import url(./blocks/profile/profile__bottom/profile__bottom-text-disabled.css);
 
 @import url(./blocks/notfound/notfound.css);
 @import url(./blocks/notfound/notfound_digit.css);

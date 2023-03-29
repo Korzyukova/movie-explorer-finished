@@ -10,6 +10,8 @@ import Header from '../components/Header';
 import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
 import { calcNumberOfCards, calcMore } from './Movies';
+import checkAuth from '../utils/checkAuth';
+import Preloader from '../components/Preloader';
 
 class SavedMovies extends React.Component {
   constructor() {
@@ -21,17 +23,27 @@ class SavedMovies extends React.Component {
       search: '',
       cards: calcNumberOfCards(),
       more: calcMore(),
+      loading: true,
     };
   }
 
   async componentDidMount() {
-    const movies = await MainApi.getMovies();
-    const shortMovies = movies.movies.filter((movie) => movie.duration <= 40);
-    this.setState((prev) => ({
-      ...prev,
-      shortMovies,
-      allMovies: movies.movies,
-    }));
+    checkAuth();
+    try {
+      const movies = await MainApi.getMovies();
+      const shortMovies = movies.movies.filter((movie) => movie.duration <= 40);
+      this.setState((prev) => ({
+        ...prev,
+        shortMovies,
+        allMovies: movies.movies,
+        loading: false,
+      }));
+    } catch {
+      this.setState(() => ({
+        error: true,
+        loading: false,
+      }));
+    }
   }
 
   onClick = () => {
@@ -51,12 +63,13 @@ class SavedMovies extends React.Component {
 
   render() {
     const {
-      tumblerIsOpen, allMovies, shortMovies, search, cards, more,
+      tumblerIsOpen, allMovies, shortMovies, search, cards, more, error, loading,
     } = this.state;
     const chooseMovies = tumblerIsOpen ? [...shortMovies] : [...allMovies];
     const listName = tumblerIsOpen ? 'shortMovies' : 'allMovies';
     let len = 0;
     let movies = [];
+    let notFound = false;
     if (search) {
       len = this.state[listName].length;
       movies = searchMovies(
@@ -66,6 +79,7 @@ class SavedMovies extends React.Component {
         ...movie,
         liked: true,
       }));
+      if (movies.length === 0) notFound = true;
     } else {
       movies = chooseMovies.map((movie) => ({
         ...movie,
@@ -111,6 +125,9 @@ class SavedMovies extends React.Component {
             </section>
           )
         }
+        {notFound && <h1>Movie not found!</h1>}
+        {error && <h1>An error occured!</h1>}
+        {loading && <Preloader />}
         <Footer />
       </main>
     );
