@@ -1,4 +1,5 @@
 import checkResponse from './checkResponse';
+import buildUrl from './buildUrl';
 
 class MainApi {
   constructor(options) {
@@ -64,7 +65,7 @@ class MainApi {
 }
 
 const api = new MainApi({
-  baseUrl: 'http://localhost:3000/api',
+  baseUrl: `${buildUrl()}/api`,
   headers: {
     authorization: `Bearer ${localStorage.getItem('token')}`,
     'Content-Type': 'application/json',
