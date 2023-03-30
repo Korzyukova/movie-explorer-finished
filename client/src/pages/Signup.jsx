@@ -23,6 +23,8 @@ async function validateInput(params) {
 class Signup extends React.Component {
   constructor(props) {
     super(props);
+    const token = localStorage.getItem('token');
+    if (token) window.location = '/movies';
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
