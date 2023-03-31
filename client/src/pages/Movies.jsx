@@ -179,8 +179,8 @@ class Movies extends React.Component {
             </section>
           )
         }
-        {notFound && <h1>Movie not found!</h1>}
-        {error && <h1>Error fetching movies!</h1>}
+        {notFound && <h1 className="movies-message">Movie not found!</h1>}
+        {error && <h1 className="movies-message">Error fetching movies!</h1>}
         {loading && <Preloader />}
         <Footer />
       </main>

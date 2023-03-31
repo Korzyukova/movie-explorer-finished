@@ -124,8 +124,8 @@ class SavedMovies extends React.Component {
             </section>
           )
         }
-        {notFound && <h1>Movie not found!</h1>}
-        {error && <h1>An error occured!</h1>}
+        {notFound && <h1 className="movies-message">Movie not found!</h1>}
+        {error && <h1 className="movies-message">An error occured!</h1>}
         {loading && <Preloader />}
         <Footer />
       </main>
