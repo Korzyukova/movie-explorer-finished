@@ -7,7 +7,7 @@ const {
   updateUser,
   signin,
   signup,
-  signout,
+  checkAuth,
 } = require('../controllers/users');
 
 router.get('/users/me', auth, getUser);
@@ -27,15 +27,13 @@ router.post('/signup', celebrate({
   }),
 }), signup);
 
-router.post(
-  '/signin', /* celebrate({
+router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
-}), */ signin,
-);
+}), signin);
 
-router.get('/signout', auth, signout);
+router.get('/checkAuth', auth, checkAuth);
 
 module.exports = router;

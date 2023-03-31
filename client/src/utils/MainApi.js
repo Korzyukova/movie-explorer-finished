@@ -40,6 +40,12 @@ class MainApi {
     }).then((res) => checkResponse(res));
   }
 
+  async checkAuth() {
+    return fetch(`${this.options.baseUrl}/checkAuth`, {
+      headers: this.options.headers,
+    }).then((res) => checkResponse(res));
+  }
+
   async signIn(user) {
     return fetch(`${this.options.baseUrl}/signin`, {
       method: 'POST',

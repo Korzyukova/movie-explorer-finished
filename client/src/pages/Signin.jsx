@@ -24,8 +24,6 @@ async function validateInput(params) {
 class Signin extends React.Component {
   constructor(props) {
     super(props);
-    const token = localStorage.getItem('token');
-    if (token) window.location = '/movies';
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -39,21 +37,26 @@ class Signin extends React.Component {
   async handleSubmit(e) {
     e.preventDefault();
     const { email, password } = this.state;
-    const validate = validateEmail(email) && validatePassword(password);
-    if (!validate) return;
-    await handleSignIn(email, password);
-    this.setState({
-      email: '',
-      password: '',
-      validationErr: true,
-    });
+    const validate = await validateInput({ email, password });
+    if (!validate) {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: true,
+      }));
+    } else {
+      await handleSignIn(email, password);
+      this.setState({
+        validationErr: false,
+      });
+    }
   }
 
   handleEmailChange = async (event) => {
     this.setState({ email: event.target.value });
     const { email, password } = this.state;
     const validate = await validateInput({ email, password });
-    if (!validate) {
+    const emptyStr = event.target.value === '';
+    if (!validate || emptyStr) {
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
@@ -70,7 +73,8 @@ class Signin extends React.Component {
     this.setState({ password: event.target.value });
     const { email, password } = this.state;
     const validate = await validateInput({ email, password });
-    if (!validate) {
+    const emptyStr = event.target.value === '';
+    if (!validate || emptyStr) {
       this.setState((prev) => ({
         ...prev,
         validationErr: true,

@@ -4,12 +4,15 @@ import MainApi from '../utils/MainApi';
 import { validatePassword, validateEmail, validateName } from '../utils/validation';
 
 async function handleRegister(email, password, name) {
-  await MainApi.signUp({
+  const token = await MainApi.signUp({
     email,
     password,
     name,
   });
-  window.location = '/signin';
+  if (token.token) {
+    localStorage.setItem('token', token.token);
+    window.location = '/movies';
+  }
 }
 
 async function validateInput(params) {
@@ -23,8 +26,6 @@ async function validateInput(params) {
 class Signup extends React.Component {
   constructor(props) {
     super(props);
-    const token = localStorage.getItem('token');
-    if (token) window.location = '/movies';
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -48,19 +49,19 @@ class Signup extends React.Component {
         validationErr: true,
       }));
     } else {
-      this.setState((prev) => ({
-        ...prev,
+      await handleRegister(email, password, name);
+      this.setState(() => ({
         validationErr: false,
       }));
     }
-    await handleRegister(email, password, name);
   }
 
   handleEmailChange = async (event) => {
     this.setState({ email: event.target.value });
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
-    if (!validate) {
+    const emptyStr = event.target.value === '';
+    if (!validate || emptyStr) {
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
@@ -77,7 +78,8 @@ class Signup extends React.Component {
     this.setState({ password: event.target.value });
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
-    if (!validate) {
+    const emptyStr = event.target.value === '';
+    if (!validate || emptyStr) {
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
@@ -94,10 +96,16 @@ class Signup extends React.Component {
     this.setState({ name: event.target.value });
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
-    if (!validate) {
+    const emptyStr = event.target.value === '';
+    if (!validate || emptyStr) {
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
+      }));
+    } else {
+      this.setState((prev) => ({
+        ...prev,
+        validationErr: false,
       }));
     }
   };

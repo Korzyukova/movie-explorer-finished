@@ -1,4 +1,10 @@
-export default () => {
-  const token = localStorage.getItem('token');
-  if (!token) window.location.href = '/';
+import MainApi from './MainApi';
+
+export default async () => {
+  try {
+    const auth = await MainApi.checkAuth();
+    return auth.auth ?? false;
+  } catch {
+    return false;
+  }
 };

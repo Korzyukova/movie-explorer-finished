@@ -13,8 +13,8 @@ import Header from '../components/Header';
 import { moviesApi } from '../utils/MoviesApi';
 import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
-import checkAuth from '../utils/checkAuth';
 import Preloader from '../components/Preloader';
+import CheckAuth from '../components/Main/CheckAuth';
 
 export function getWidthSize(width) {
   if (width >= 1280) return 'large';
@@ -63,7 +63,6 @@ class Movies extends React.Component {
   }
 
   async componentDidMount() {
-    checkAuth();
     try {
       const movies = await moviesApi.getMovies();
       const likedMovies = await MainApi.getMovies();
@@ -188,5 +187,4 @@ class Movies extends React.Component {
     );
   }
 }
-
-export default Movies;
+export default CheckAuth(Movies);

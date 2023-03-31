@@ -10,8 +10,8 @@ import Header from '../components/Header';
 import MainApi from '../utils/MainApi';
 import searchMovies from '../utils/searchMovies';
 import { calcNumberOfCards, calcMore } from './Movies';
-import checkAuth from '../utils/checkAuth';
 import Preloader from '../components/Preloader';
+import CheckAuth from '../components/Main/CheckAuth';
 
 class SavedMovies extends React.Component {
   constructor() {
@@ -28,7 +28,6 @@ class SavedMovies extends React.Component {
   }
 
   async componentDidMount() {
-    checkAuth();
     try {
       const movies = await MainApi.getMovies();
       const shortMovies = movies.movies.filter((movie) => movie.duration <= 40);
@@ -133,5 +132,4 @@ class SavedMovies extends React.Component {
     );
   }
 }
-
-export default SavedMovies;
+export default CheckAuth(SavedMovies);

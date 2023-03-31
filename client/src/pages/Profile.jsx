@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from '../components/Header';
-import checkAuth from '../utils/checkAuth';
 import MainApi from '../utils/MainApi';
 import { validateEmail, validateName } from '../utils/validation';
+import CheckAuth from '../components/Main/CheckAuth';
 
 class Profile extends React.Component {
   constructor() {
@@ -17,9 +17,7 @@ class Profile extends React.Component {
   }
 
   async componentDidMount() {
-    checkAuth();
     const { data: me } = await MainApi.getMe();
-    console.log(me);
     this.setState(() => ({
       name: me.name,
       email: me.email,
@@ -46,14 +44,28 @@ class Profile extends React.Component {
     const { name, email } = this.state;
     const validate = validateEmail(email) || validateName(name);
     if (!validate) return;
-    await MainApi.patchMe({
+    const patch = await MainApi.patchMe({
       name,
       email,
     });
+    if (patch.update) {
+      this.setState((prev) => ({
+        ...prev,
+        original: `${name}${email}`,
+        updated: true,
+      }));
+    } else {
+      this.setState((prev) => ({
+        ...prev,
+        updateErr: true,
+      }));
+    }
   }
 
   render() {
-    const { name, email, original } = this.state;
+    const {
+      name, email, original, updated, updateErr,
+    } = this.state;
     const change = `${name}${email}` === original;
     return (
       <>
@@ -79,6 +91,8 @@ class Profile extends React.Component {
                   value={email}
                 />
               </div>
+              {updated && <h1 className="profile-updated">Profile updated</h1>}
+              {updateErr && <h1 className="profile-somethingwrong">Something went wrong</h1>}
             </form>
             <div className="profile__bottom">
               <button className={`profile__bottom-text ${change && 'profile__bottom-text-disabled'}`} type="button" onClick={change ? () => {} : this.handleSubmit}>Update profile</button>
@@ -99,4 +113,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default CheckAuth(Profile);
