@@ -88,7 +88,8 @@ class Signin extends React.Component {
   };
 
   render() {
-    const { validationErr } = this.state;
+    const { validationErr, email, password } = this.state;
+    const empty = email.length === 0 && password.length === 0;
     return (
       <section className="signup">
         <div className="signup__container">
@@ -114,7 +115,7 @@ class Signin extends React.Component {
               type="password"
               onChange={this.handlePasswordChange}
             />
-            <h1 className={`signup__container-wrong ${validationErr ? 'signup__container-wrong-visible' : ''}`}>Something went wrong</h1>
+            <h1 className={`signup__container-wrong ${validationErr && !empty ? 'signup__container-wrong-visible' : ''}`}>Something went wrong</h1>
           </form>
           <button className={`signup__container-button ${validationErr ? 'signup__container-button-disable' : ''}`} type="button" onClick={this.handleSubmit}>
             Sign In
