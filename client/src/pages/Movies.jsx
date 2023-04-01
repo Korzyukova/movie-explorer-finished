@@ -49,40 +49,34 @@ export function calcMore() {
 class Movies extends React.Component {
   constructor() {
     super();
+    const tumblerIsOpen = localStorage.getItem('tumblerIsOpen');
     this.state = {
-      tumblerIsOpen: false,
+      tumblerIsOpen: tumblerIsOpen === 'true',
       shortMovies: [],
       allMovies: [],
-      search: '',
+      search: localStorage.getItem('search') ?? '',
       searchActive: false,
       cards: calcNumberOfCards(),
       more: calcMore(),
       loading: true,
+      likedMovies: [],
     };
     this.refetch = this.refetch.bind(this);
+    this.submitForm = this.submitForm.bind(this);
   }
 
   async componentDidMount() {
+    const { search } = this.state;
     try {
-      const movies = await moviesApi.getMovies();
       const likedMovies = await MainApi.getMovies();
-      let i = 0;
-      for (const movie of movies) {
-        const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
-        if (lm.length > 0) {
-          movies[i].liked = true;
-          movies[i].saveId = lm[0]._id;
-        }
-        i++;
-      }
-      const shortMovies = movies.filter((movie) => movie.duration <= 40);
       this.setState((prev) => ({
         ...prev,
-        shortMovies,
-        allMovies: movies,
         loading: false,
-      }));
-    } catch {
+        likedMovies,
+      }), async () => {
+        if (search.length > 0) await this.submitForm(search);
+      });
+    } catch (error) {
       this.setState(() => ({
         error: true,
         loading: false,
@@ -91,23 +85,23 @@ class Movies extends React.Component {
   }
 
   onClick = () => {
+    const { tumblerIsOpen } = this.state;
+    localStorage.setItem('tumblerIsOpen', !tumblerIsOpen);
     this.setState((prev) => ({
       ...prev,
       tumblerIsOpen: !prev.tumblerIsOpen,
     }));
   };
 
-  setSearch = (value) => {
+  async submitForm(search) {
+    localStorage.setItem('search', search);
     this.setState((prev) => ({
       ...prev,
-      search: value,
-      cards: calcNumberOfCards(),
+      loading: true,
+      search,
     }));
-  };
-
-  async refetch() {
-    const movies = await moviesApi.getMovies();
-    const likedMovies = await MainApi.getMovies();
+    const { likedMovies } = this.state;
+    const movies = await moviesApi.getMovies(search);
     let i = 0;
     for (const movie of movies) {
       const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
@@ -122,6 +116,30 @@ class Movies extends React.Component {
       ...prev,
       shortMovies,
       allMovies: movies,
+      loading: false,
+    }));
+  }
+
+  async refetch() {
+    const { search } = this.state;
+    const likedMovies = await MainApi.getMovies();
+    const movies = await moviesApi.getMovies(search);
+    let i = 0;
+    for (const movie of movies) {
+      const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
+      if (lm.length > 0) {
+        movies[i].liked = true;
+        movies[i].saveId = lm[0]._id;
+      }
+      i++;
+    }
+    const shortMovies = movies.filter((movie) => movie.duration <= 40);
+    this.setState((prev) => ({
+      ...prev,
+      shortMovies,
+      allMovies: movies,
+      loading: false,
+      likedMovies,
     }));
   }
 
@@ -150,7 +168,8 @@ class Movies extends React.Component {
         <SearchForm
           tumblerIsOpen={tumblerIsOpen}
           setTumblerIsOpen={this.onClick}
-          setSearch={this.setSearch}
+          submitForm={this.submitForm}
+          search={search}
         />
         <MoviesCardList
           key={JSON.stringify({ search, tumblerIsOpen, movies })}
@@ -179,7 +198,7 @@ class Movies extends React.Component {
             </section>
           )
         }
-        {notFound && <h1 className="movies-message">Movie not found!</h1>}
+        {notFound && !error && !loading && <h1 className="movies-message">Movie not found!</h1>}
         {error && <h1 className="movies-message">Error fetching movies!</h1>}
         {loading && <Preloader />}
         <Footer />

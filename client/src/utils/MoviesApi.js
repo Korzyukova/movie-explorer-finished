@@ -9,8 +9,8 @@ export default class MoviesApi {
     return this.options.baseUrl;
   }
 
-  async getMovies() {
-    const res = await fetch(`${this.options.baseUrl}/beatfilm-movies`);
+  async getMovies(search) {
+    const res = await fetch(`${this.options.baseUrl}/beatfilm-movies?${new URLSearchParams({ nameEN: search })}`);
     return checkResponse(res);
   }
 }

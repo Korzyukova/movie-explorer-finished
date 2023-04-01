@@ -8,9 +8,10 @@ class SearchForm extends React.Component {
     super(props);
     this.state = {
       tumblerIsOpen: props.tumblerIsOpen,
-      search: '',
+      search: props.search ?? '',
     };
     this.setTumblerIsOpen = props.setTumblerIsOpen;
+    this.submitForm = props.submitForm;
     this.setSearch = props.setSearch;
   }
 
@@ -29,7 +30,8 @@ class SearchForm extends React.Component {
             className="searchform__container-bar"
             onSubmit={(e) => {
               e.preventDefault();
-              this.setSearch(search);
+              if (this.setSearch) this.setSearch(search);
+              if (this.submitForm) this.submitForm(search);
             }}
           >
             <input
@@ -45,6 +47,7 @@ class SearchForm extends React.Component {
               autoComplete="off"
               required
               key={this.search}
+              value={search}
             />
             <button className="searchform__container-bar-button" type="submit">
               <img className="searchform__container-bar-pic" src={find} alt="magnifying glass" />

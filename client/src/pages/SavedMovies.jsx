@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
@@ -17,7 +18,7 @@ class SavedMovies extends React.Component {
   constructor() {
     super();
     this.state = {
-      tumblerIsOpen: false,
+      tumblerIsOpen: localStorage.getItem('tumblerIsOpen') === 'true',
       shortMovies: [],
       allMovies: [],
       search: '',
@@ -25,9 +26,11 @@ class SavedMovies extends React.Component {
       more: calcMore(),
       loading: true,
     };
+    this.handleResize = this.handleResize.bind(this);
   }
 
   async componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
     try {
       const movies = await MainApi.getMovies();
       const shortMovies = movies.movies.filter((movie) => movie.duration <= 40);
@@ -45,7 +48,17 @@ class SavedMovies extends React.Component {
     }
   }
 
+  handleResize() {
+    this.setState((prev) => ({
+      ...prev,
+      cards: calcNumberOfCards(),
+      more: calcMore(),
+    }));
+  }
+
   onClick = () => {
+    const { tumblerIsOpen } = this.state;
+    localStorage.setItem('tumblerIsOpen', !tumblerIsOpen);
     this.setState((prev) => ({
       ...prev,
       tumblerIsOpen: !prev.tumblerIsOpen,
@@ -59,6 +72,10 @@ class SavedMovies extends React.Component {
       cards: calcNumberOfCards(),
     }));
   };
+
+  async refetch() {
+    window.location.reload();
+  }
 
   render() {
     const {
@@ -94,12 +111,15 @@ class SavedMovies extends React.Component {
         <SearchForm
           tumblerIsOpen={tumblerIsOpen}
           setTumblerIsOpen={this.onClick}
-          search={search}
           setSearch={this.setSearch}
+          search={this.search}
         />
         <MoviesCardList
-          key={JSON.stringify({ search, tumblerIsOpen, movies })}
+          key={JSON.stringify({
+            search, tumblerIsOpen, movies, allMovies, loading,
+          })}
           movies={movies}
+          refetch={this.refetch}
           savedMovies
         />
         {

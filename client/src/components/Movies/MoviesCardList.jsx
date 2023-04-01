@@ -20,6 +20,7 @@ class MoviesCardList extends React.Component {
         ...prev,
         movies: prev.movies?.filter((movie) => movie._id !== id),
       }));
+      await this.refetch();
     } else {
       await this.refetch();
     }

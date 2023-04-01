@@ -64,14 +64,14 @@ class movieCard extends React.Component {
                 await mainApi.postMovies(this.buildBody());
                 this.setState((prev) => ({
                   ...prev,
-                  liked: !prev.liked,
+                  liked: true,
                 }));
                 await this.removeLike();
               } else {
                 await mainApi.deleteMovie(this.movie._id ?? this.movie.saveId);
                 this.setState((prev) => ({
                   ...prev,
-                  liked: !prev.liked,
+                  liked: false,
                 }));
                 await this.removeLike(this.movie._id);
               }
