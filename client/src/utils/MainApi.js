@@ -71,7 +71,7 @@ class MainApi {
 }
 
 const api = new MainApi({
-  baseUrl: `${buildUrl()}/api`,
+  baseUrl: `${buildUrl()}`,
   headers: {
     authorization: `Bearer ${localStorage.getItem('token')}`,
     'Content-Type': 'application/json',
