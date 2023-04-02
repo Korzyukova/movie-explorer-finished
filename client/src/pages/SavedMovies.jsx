@@ -70,6 +70,8 @@ class SavedMovies extends React.Component {
       ...prev,
       search: value,
       cards: calcNumberOfCards(),
+      notFound: false,
+      error: false,
     }));
   };
 

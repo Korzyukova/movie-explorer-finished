@@ -99,6 +99,8 @@ class Movies extends React.Component {
       ...prev,
       loading: true,
       search,
+      notFound: false,
+      error: false,
     }));
     const { likedMovies } = this.state;
     const movies = await moviesApi.getMovies(search);
