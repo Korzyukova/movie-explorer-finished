@@ -15,12 +15,36 @@ async function handleRegister(email, password, name) {
   }
 }
 
+function buildErr(validate) {
+  const { emailVal, passwordVal, nameVal } = validate;
+  const issues = [];
+  if (!emailVal) issues.push('email');
+  if (!passwordVal) issues.push('password');
+  if (!nameVal) issues.push('name');
+  return ` ${issues.join(', ')}.`;
+}
+
+let first = true;
 async function validateInput(params) {
   const { email, name, password } = params;
   const emailVal = await validateEmail(email);
   const nameVal = await validateName(name);
   const passwordVal = await validatePassword(password);
-  return emailVal && nameVal && passwordVal;
+  if (first || (passwordVal && emailVal && nameVal)) {
+    first = false;
+    return {
+      error: false,
+      emailVal: null,
+      passwordVal: null,
+      nameVal: null,
+    };
+  }
+  return {
+    error: true,
+    emailVal,
+    passwordVal,
+    nameVal,
+  };
 }
 
 class Signup extends React.Component {
@@ -36,6 +60,7 @@ class Signup extends React.Component {
       password: '',
       name: '',
       validationErr: false,
+      validationStr: '',
     };
   }
 
@@ -43,10 +68,12 @@ class Signup extends React.Component {
     e.preventDefault();
     const { email, password, name } = this.state;
     const validate = await validateInput({ email, password, name });
-    if (!validate) {
+    if (validate.error) {
+      const validationStr = buildErr(validate);
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
+        validationStr,
       }));
     } else {
       await handleRegister(email, password, name);
@@ -61,10 +88,12 @@ class Signup extends React.Component {
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
     const emptyStr = event.target.value === '';
-    if (!validate || emptyStr) {
+    if (validate.error || emptyStr) {
+      const validationStr = buildErr(validate);
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
+        validationStr,
       }));
     } else {
       this.setState((prev) => ({
@@ -79,10 +108,12 @@ class Signup extends React.Component {
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
     const emptyStr = event.target.value === '';
-    if (!validate || emptyStr) {
+    if (validate.error || emptyStr) {
+      const validationStr = buildErr(validate);
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
+        validationStr,
       }));
     } else {
       this.setState((prev) => ({
@@ -97,10 +128,12 @@ class Signup extends React.Component {
     const { email, name, password } = this.state;
     const validate = await validateInput({ email, password, name });
     const emptyStr = event.target.value === '';
-    if (!validate || emptyStr) {
+    if (validate.error || emptyStr) {
+      const validationStr = buildErr(validate);
       this.setState((prev) => ({
         ...prev,
         validationErr: true,
+        validationStr,
       }));
     } else {
       this.setState((prev) => ({
@@ -111,7 +144,9 @@ class Signup extends React.Component {
   };
 
   render() {
-    const { validationErr, email, password } = this.state;
+    const {
+      validationErr, email, password, validationStr,
+    } = this.state;
     const empty = email.length === 0 && password.length === 0;
     return (
       <section className="signup">
@@ -145,7 +180,11 @@ class Signup extends React.Component {
               type="password"
               onChange={this.handlePasswordChange}
             />
-            <h1 className={`signup__container-wrong ${validationErr && !empty ? 'signup__container-wrong-visible' : ''}`}>Something went wrong</h1>
+            <h1 className={`signup__container-wrong ${validationErr && !empty ? 'signup__container-wrong-visible' : ''}`}>
+              Something went wrong with your
+              {' '}
+              {validationStr}
+            </h1>
           </form>
           <button className={`signup__container-button ${validationErr ? 'signup__container-button-disable' : ''}`} type="button" onClick={this.handleSubmit}>
             Sign Up
