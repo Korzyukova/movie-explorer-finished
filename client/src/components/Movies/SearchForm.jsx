@@ -37,10 +37,13 @@ class SearchForm extends React.Component {
             <input
               className="searchform__container-bar-input"
               type="search"
-              onChange={(value) => this.setState((prev) => ({
-                ...prev,
-                search: value.target.value,
-              }))}
+              onChange={(value) => {
+                this.setState((prev) => ({
+                  ...prev,
+                  search: value.target.value,
+                }));
+                this.setSearch(value.target.value);
+              }}
               id="search"
               name="search"
               placeholder="Movie"

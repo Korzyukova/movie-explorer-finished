@@ -105,7 +105,7 @@ class SavedMovies extends React.Component {
       }));
       len = this.state[listName].length;
     }
-    if (movies.length > cards) movies.splice(0, cards);
+    if (movies.length > cards) movies = movies.splice(0, cards);
     else len = movies.length;
     return (
       <main className="movies">

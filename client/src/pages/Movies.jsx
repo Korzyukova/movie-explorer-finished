@@ -69,10 +69,23 @@ class Movies extends React.Component {
     const { search } = this.state;
     try {
       const likedMovies = await MainApi.getMovies();
+      const movies = await moviesApi.getMovies();
+      const shortMovies = movies.filter((movie) => movie.duration <= 40);
+      let i = 0;
+      for (const movie of movies) {
+        const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
+        if (lm.length > 0) {
+          movies[i].liked = true;
+          movies[i].saveId = lm[0]._id;
+        }
+        i++;
+      }
       this.setState((prev) => ({
         ...prev,
         loading: false,
         likedMovies,
+        allMovies: movies,
+        shortMovies,
       }), async () => {
         if (search.length > 0) await this.submitForm(search);
       });
@@ -93,6 +106,16 @@ class Movies extends React.Component {
     }));
   };
 
+  setSearch = (value) => {
+    this.setState((prev) => ({
+      ...prev,
+      search: value,
+      cards: calcNumberOfCards(),
+      notFound: false,
+      error: false,
+    }));
+  };
+
   async submitForm(search) {
     localStorage.setItem('search', search);
     this.setState((prev) => ({
@@ -102,22 +125,8 @@ class Movies extends React.Component {
       notFound: false,
       error: false,
     }));
-    const { likedMovies } = this.state;
-    const movies = await moviesApi.getMovies(search);
-    let i = 0;
-    for (const movie of movies) {
-      const lm = likedMovies.movies.filter((el) => el.movieId === movie.id);
-      if (lm.length > 0) {
-        movies[i].liked = true;
-        movies[i].saveId = lm[0]._id;
-      }
-      i++;
-    }
-    const shortMovies = movies.filter((movie) => movie.duration <= 40);
     this.setState((prev) => ({
       ...prev,
-      shortMovies,
-      allMovies: movies,
       loading: false,
     }));
   }
@@ -149,6 +158,7 @@ class Movies extends React.Component {
     const {
       tumblerIsOpen, allMovies, shortMovies, search, cards, more, error, loading,
     } = this.state;
+    console.log('cards', cards);
     let len = 0;
     let movies = [];
     let notFound = false;
@@ -160,7 +170,7 @@ class Movies extends React.Component {
         tumblerIsOpen ? [...shortMovies] : [...allMovies],
       );
       if (movies.length === 0) notFound = true;
-      if (movies.length > cards) movies.splice(0, cards);
+      if (movies.length > cards) movies = movies.splice(0, cards);
       else len = movies.length;
     }
 
@@ -172,6 +182,7 @@ class Movies extends React.Component {
           setTumblerIsOpen={this.onClick}
           submitForm={this.submitForm}
           search={search}
+          setSearch={this.setSearch}
         />
         <MoviesCardList
           key={JSON.stringify({ search, tumblerIsOpen, movies })}
