@@ -9,7 +9,7 @@ class Portfolio extends React.Component {
           <p className="portfolio__container-header">Portfolio</p>
           <ul className="portfolio__container-list">
             <li>
-              <a className="portfolio__container-site-arrow" href="https://korzyukova.github.io/how-to-learn" target="_blank" rel="noreferrer">
+              <a className="portfolio__container-site-arrow" href="https://how-to-learn.korzuk.com/" target="_blank" rel="noreferrer">
                 <p className="portfolio__container-site">Static site</p>
                 <img className="portfolio__container-arrow" alt="arrow" src={arrow} />
               </a>
