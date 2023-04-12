@@ -1,42 +1,45 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import wolf from '../../images/wolf.jpg';
 import MovieCard from './MovieCard';
 
 class MoviesCardList extends React.Component {
   constructor(props) {
     super(props);
     this.savedMovies = props.savedMovies;
+    this.refetch = props.refetch?.bind(this);
+    this.removeLike = this.removeLike.bind(this);
+    this.state = {
+      movies: props.savedMovies ? props.movies?.filter((movie) => movie.liked) : props.movies,
+    };
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  createPlaceholders() {
-    const movieArrPlaceholder = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 12; i++) {
-      const mins = Math.floor(Math.random() * 60);
-      movieArrPlaceholder.push({
-        img: wolf,
-        title: 'Wolf on a rock',
-        length: `2h ${mins}min`,
-        liked: mins % 2 === 0,
-      });
+  async removeLike(id) {
+    if (id) {
+      this.setState((prev) => ({
+        ...prev,
+        movies: prev.movies?.filter((movie) => movie._id !== id),
+      }));
+      await this.refetch();
+    } else {
+      await this.refetch();
     }
-    return movieArrPlaceholder;
   }
 
   render() {
+    const { movies } = this.state;
     return (
       <div className="moviescardlist">
         <div className="moviescardlist__container">
-          <ul className="photo-grid">
-            {this.createPlaceholders()
-              .map((movie) => (
+          <ul key={movies} className="photo-grid">
+            {movies
+              ?.map((movie) => (
                 <MovieCard
                   movie={movie}
-                  liked={movie.liked}
+                  liked={movie.liked ?? false}
                   savedMovies={this.savedMovies}
                   key={uuidv4()}
+                  removeLike={this.removeLike}
                 />
               ))}
           </ul>

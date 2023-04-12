@@ -7,3 +7,12 @@
     position: relative;
     left: 20px;
 }
+
+.searchform__container-bar-input::-webkit-search-cancel-button {
+    display: none;
+  }
+  
+  .searchform__container-bar-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }

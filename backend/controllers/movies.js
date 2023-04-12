@@ -13,7 +13,7 @@ module.exports.getMovies = (req, res, next) => {
     owner: req.user._id,
   })
     .then((movies) => {
-      res.send({ data: movies });
+      res.send({ movies });
     })
     .catch(next);
 };
@@ -32,7 +32,8 @@ module.exports.createMovie = (req, res, next) => {
     nameEN,
     movieId,
   } = req.body;
-  Movie.create({
+
+  Movie.findOneAndUpdate({ movieId, owner: req.user._id }, {
     country,
     director,
     duration,
@@ -45,6 +46,9 @@ module.exports.createMovie = (req, res, next) => {
     nameRU,
     nameEN,
     owner: req.user._id,
+  }, {
+    new: true,
+    upsert: true,
   })
     .then((data) => res.send({ data }))
     .catch((err) => {

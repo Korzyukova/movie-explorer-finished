@@ -40,7 +40,7 @@ module.exports.updateUser = (req, res, next) => {
     runValidators: true,
     new: true,
   })
-    .then(() => res.send(update))
+    .then(() => res.json({ update }))
     .catch((err) => {
       if (err.code === 11000) {
         next(new UserExistsError409(errorMsg409));
@@ -54,7 +54,6 @@ module.exports.updateUser = (req, res, next) => {
 
 module.exports.signin = (req, res, next) => {
   const { email, password } = req.body;
-
   User.findOne({ email })
     .select('+password')
     .then(async (user) => {
@@ -68,7 +67,7 @@ module.exports.signin = (req, res, next) => {
           const token = jwt.sign({ _id: user._id }, secret, {
             expiresIn: '7d',
           });
-          res.send({ token });
+          res.json({ token });
         }
       }
     })
@@ -91,15 +90,12 @@ module.exports.signup = async (req, res, next) => {
       next(err);
     }
   });
-  res.send({
-    data: {
-      email: user.email,
-      name: user.name,
-    },
+  const token = jwt.sign({ _id: user._id }, secret, {
+    expiresIn: '7d',
   });
+  res.json({ token });
 };
 
-module.exports.signout = async (req, res) => {
-  res.clearCookie();
-  res.send('You are logged out');
+module.exports.checkAuth = async (req, res) => {
+  res.json({ auth: true });
 };

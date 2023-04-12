@@ -1,0 +1,4 @@
+.signup__container-button-disable:hover {
+ cursor: default;
+ opacity: 100%;
+}
