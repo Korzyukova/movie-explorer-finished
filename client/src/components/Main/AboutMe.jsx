@@ -1,5 +1,5 @@
 import React from 'react';
-import cat from '../../images/cat.jpg';
+import me from '../../images/me.jpg';
 
 class AboutMe extends React.Component {
   render() {
@@ -32,7 +32,7 @@ class AboutMe extends React.Component {
               </div>
               <a className="aboutme__container-description-github" href="https://github.com/Korzyukova" target="_blank" rel="noreferrer">Github</a>
             </div>
-            <img className="aboutme__container-description-avatar" alt="cat" src={cat} />
+            <img className="aboutme__container-description-avatar" alt="cat" src={me} />
           </div>
         </div>
       </section>
