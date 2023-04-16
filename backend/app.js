@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -23,7 +24,9 @@ app.use((req, res, next) => {
   }
 });
 app.use(requestLogger);
+app.use(express.static('../client/build'));
 app.use('/api', routes);
+app.use((req, res) => res.sendFile(path.join(__dirname, '..', 'client/build', 'index.html')));
 app.all('*', auth, () => {
   throw new NotFoundError404('Not found.');
 });
