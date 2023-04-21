@@ -9,7 +9,7 @@ class Footer extends React.Component {
           <p className="footer__container-copyright">Yandex.Practicum х BeatFilm.</p>
           <div className="footer__container-copyright-line" />
           <div className="footer__container-copyright-bottom">
-            <p>&copy; 2020</p>
+            <p>&copy; 2023</p>
             <div className="footer__container-links">
               <a className="footer__container-links-yandex" href="https://practicum.yandex.ru" target="_blank" rel="noreferrer">Yandex.Practicum</a>
               <a className="footer__container-links-github" href="https://github.com/Korzyukova" target="_blank" rel="noreferrer">GitHub</a>
