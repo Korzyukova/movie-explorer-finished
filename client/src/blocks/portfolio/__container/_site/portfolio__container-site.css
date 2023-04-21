@@ -13,3 +13,7 @@
         line-height: 50px;
     }
 }
+.portfolio__container-site:hover {
+    font-size: 35px;
+    cursor: pointer;
+  }

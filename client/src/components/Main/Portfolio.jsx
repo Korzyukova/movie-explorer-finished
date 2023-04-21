@@ -6,8 +6,16 @@ class Portfolio extends React.Component {
     return (
       <section className="portfolio">
         <div className="portfolio__container">
-          <p className="portfolio__container-header">Portfolio</p>
+          {/* <p className="portfolio__container-header">Portfolio</p> */}
           <ul className="portfolio__container-list">
+            <li>
+              <a className="portfolio__container-site-arrow" href="https://github.com/Korzyukova" target="_blank" rel="noreferrer">
+                <p className="portfolio__container-site">Github</p>
+                <img className="portfolio__container-arrow" alt="arrow" src={arrow} />
+              </a>
+
+              <div className="portfolio__container-line" />
+            </li>
             <li>
               <a className="portfolio__container-site-arrow" href="https://how-to-learn.korzuk.com/" target="_blank" rel="noreferrer">
                 <p className="portfolio__container-site">Static site</p>

@@ -30,7 +30,7 @@ class AboutMe extends React.Component {
                   </li>
                 </ul>
               </div>
-              <a className="aboutme__container-description-github" href="https://github.com/Korzyukova" target="_blank" rel="noreferrer">Github</a>
+              {/* <a className="aboutme__container-description-github" href="https://github.com/Korzyukova" target="_blank" rel="noreferrer">Github</a> */}
             </div>
             <img className="aboutme__container-description-avatar" alt="cat" src={me} />
           </div>
