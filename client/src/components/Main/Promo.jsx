@@ -5,7 +5,7 @@ class Promo extends React.Component {
   render() {
     return (
       <section className="promo">
-        <div className="promo__text">Movie explorer bootcamp project. Please, signup.</div>
+        <div className="promo__text">Hello! This is my final bootcamp project - movie explorer. Please, signup.</div>
         <div><img className="promo__logo" alt="planet Earth" src={promologo} /></div>
       </section>
     );
