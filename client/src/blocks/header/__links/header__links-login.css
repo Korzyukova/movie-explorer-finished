@@ -4,11 +4,16 @@
     align-items: center;
     margin: 0;
     padding: 0;
-    color: #000000;
+    color: white;
     text-decoration: none;
     text-align: center;
     background-color: #2BE080;
+    color: #000000;
     height: 32.79px;
     width: 76px;
     border-radius: 3px;
+
+}
+.header__links-login:hover {
+   text-decoration: underline;
 }

@@ -7,5 +7,7 @@
     margin-right: 30px;
     color: #FFFFFF;
     text-decoration: none;
-    ;
 }
+.header__links-signup:hover {
+    text-decoration: underline;
+ }
