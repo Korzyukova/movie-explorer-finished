@@ -1,5 +1,9 @@
 .navigation__link {
     color: white;
-    font-size: 13px;
+    font-size: 18px;
     margin: 0 29px 0 29px;
+    text-decoration: none;
+}
+.navigation__link:hover {
+    text-decoration: underline;
 }
